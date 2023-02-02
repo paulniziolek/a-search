@@ -14,11 +14,24 @@ class Cell():
         return f"Wall located at ({self.x}, {self.y})" if self.isWall else f"Open Space located at ({self.x}, {self.y})"
     
     def __repr__(self):
-        return f"Cell({self.x}, {self.y})"
+        return f"({self.x}, {self.y})"
 
 
-mycell = Cell(5, 5)
-print(mycell)
-
+class MazeArray():
+    """
+    Object representing Maze array of Cell() objects
+    """
+    def __init__(self, n, m):
+        self.n = n
+        self.m = m
+        self.world = []
+        for i in range(n):
+            self.world.append(list())
+            for j in range(m):
+                self.world[i].append(Cell(i, j))
     
+    def __repr__(self):
+        return str(self.world)
 
+world = 2
+    
