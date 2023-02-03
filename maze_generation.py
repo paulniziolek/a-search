@@ -2,7 +2,7 @@ from maze import MazeArray, Cell
 from collections import deque
 import random
 
-def create_maze(m=8, n=8, isRandom=False):
+def create_maze(m=20, n=20, isRandom=False):
     if m < 1 or n < 1:
         raise Exception(f"Invalid Maze Size: {m}x{n}")
 
@@ -50,54 +50,26 @@ def dfs(maze, *args):
     # adding in start position
     start = check_args(args)
     visited.add(start)
-    stack: list[Cell] = []
-    previousCell= None
-    cell = None
-
-    # TESTING
-    path = []
+    stack: list[Cell] = [start]
+    cell = start
 
     while stack:
-
-        # until we get a valid cell.
-        while cell not in visited and stack:
-            cell: Cell = stack.pop()
-        cell = cell.cell_at((cell.x,cell.y))
         visited.add(cell)
-
-        # TESTING PURPOSES
-        path.append(cell)
-        print(path)
-        
         neighbors = get_valid_neighbors(cell)
-        random.shuffle(neighbors) # shuffling order of neighbors for more random DFS
+        if not neighbors:
+            cell = stack.pop()
+            continue
 
-        nextCell = neighbors[-1]
-        maze.remove_wall(cell, nextCell)
-        stack.append(nextCell)
+        nextCell = random.choice(neighbors)
+        maze.remove_wall(nextCell, cell)
+        stack.append(cell)
+        cell = nextCell
 
-        
-"""
-        # logic here
-        if len(neighbors)==1:
-            maze.remove_wall(cell, neighbors[-1])
-        elif len(neighbors)>1:
-            for i in range(len(neighbors[:-1])):
-                remove = random.getrandbits(1)
-                remove = 1
-                if remove==1:
-                    maze.remove_wall(cell, neighbors[i])
-            maze.remove_wall(cell, neighbors[-1])
-        else:
-            print(cell)
-        #print(neighbors)
-        stack.extend([neighbors[-1]])
-        for i in neighbors:
-            visited.add(i)
-        print(maze)
-"""
-
+# TESTING
 myworld = create_maze()
 print(myworld)
 dfs(myworld)
 print(myworld)
+
+
+
