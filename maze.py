@@ -32,6 +32,11 @@ class MazeArray():
     
     def __repr__(self):
         return str(self.world)
-
-world = 2
     
+    def __str__(self):
+        mystr = ""
+        for i in range(self.m):
+            for j in range(self.n):
+                mystr += '■' if self.world[i][j].isWall else '_'
+            mystr += '\n'
+        return mystr
