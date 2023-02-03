@@ -2,7 +2,7 @@ from maze import MazeArray, Cell
 from collections import deque
 import random
 
-def create_maze(m=20, n=20, isRandom=False):
+def create_maze(m=4, n=4, isRandom=False):
     if m < 1 or n < 1:
         raise Exception(f"Invalid Maze Size: {m}x{n}")
 
@@ -22,27 +22,27 @@ def dfs(maze, *args):
     # checks if starting DFS position has been provided, else, provides random position pos
     def check_args(args: list[int]) -> Cell: 
         if not args:
-            pos = (random.randrange(m), random.randrange(n))
+            pos = (random.randrange(n), random.randrange(m))
         elif len(args)==2:
             pos = (args[0], args[1])
         else:
             raise Exception(f"{len(args)} arguments given but only 0 or 2 accepted.")
-        return maze.world[pos[0]][pos[1]]
+        return maze.cell_at((pos[0], pos[1]))
 
     # a node is valid when it is inside the grid and hasn't been visited
     def is_valid(node: Cell | tuple) -> bool:
         if isinstance(node, Cell):
             return 0 <= node.x < n and 0 <= node.y < m and node not in visited
         elif isinstance(node, tuple):
-            return 0 <= node[0] < n and 0 <= node[1] < m and maze.world[node[0]][node[1]] not in visited
+            return 0 <= node[0] < n and 0 <= node[1] < m and maze.cell_at((node[0], node[1])) not in visited
 
     # fills neighbors with valid maze Cells
     def get_valid_neighbors(cell: Cell) -> list[Cell]:
-        invalidated_neighbors = cell.get_neighbors()
-        for i in range(len(invalidated_neighbors)): # technically equal to range(4)
-            if is_valid(invalidated_neighbors[i]):
-                invalidated_neighbors[i] = maze.world[invalidated_neighbors[i][0]][invalidated_neighbors[i][1]]
-        return list(filter(lambda x: isinstance(x, Cell), invalidated_neighbors)) # returns the list of validated neighbors
+        unverified_neighbors = cell.get_neighbors()
+        for i in range(4): # for four possible neighbors
+            if is_valid(unverified_neighbors[i]):
+                unverified_neighbors[i] = maze.cell_at((unverified_neighbors[i][0], unverified_neighbors[i][1]))
+        return list(filter(lambda x: isinstance(x, Cell), unverified_neighbors)) # returns the list of validated neighbors
         
 
     # SUB METHODS END ---------------------------------------------------------------------------
@@ -61,7 +61,7 @@ def dfs(maze, *args):
             continue
 
         nextCell = random.choice(neighbors)
-        maze.remove_wall(nextCell, cell)
+        maze.remove_wall(cell, nextCell)
         stack.append(cell)
         cell = nextCell
 
@@ -71,5 +71,8 @@ print(myworld)
 dfs(myworld)
 print(myworld)
 
+for cell in myworld.world[0]:
+    print((cell.x, cell.y))
+    print(cell.walls)
 
 
