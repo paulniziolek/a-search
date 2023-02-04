@@ -12,15 +12,25 @@ class Cell():
         self.walls={'N': True, 'S': True, 'W': True, 'E': True}
         if not isWall: 
             for key in self.walls.keys(): self.walls[key]=False
-    
-    def __repr__(self):
-        return f"({self.x}, {self.y})"
+        self.val = float("inf")
     
     def get_pos(self) -> tuple:
         return (self.x, self.y)
     
     def get_neighbors(self) -> list[tuple]:
         return [(self.x+dx, self.y+dy) for dy, dx in [(0,-1), (0,1), (-1, 0), (1, 0)]]
+    
+    def __repr__(self):
+        return f"({self.x}, {self.y})"
+    
+    # comparison operator overload for comparing objects
+    def __lt__(self, other):
+        return self.val < other.val
+    def __gt__(self, other):
+        return self.val > other.val
+    def __eq__(self, other):
+        return self.val == other.val
+    
 
 
 class MazeArray():
@@ -86,4 +96,3 @@ def read_maze(file):
 
 def write_maze(maze, file):
     pass
-
