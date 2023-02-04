@@ -12,8 +12,24 @@ class Cell():
         self.walls={'N': True, 'S': True, 'W': True, 'E': True}
         if not isWall: 
             for key in self.walls.keys(): self.walls[key]=False
-        self.val = float("inf")
-    
+        
+        # including f=0 to have some comparability operation between Cell objects, especially when adding the Cell object to the heap. 
+        self.f = 0
+    """
+    # I was going to add g(n) and h(n) as part of the cell obj, but instead handled this in the a* algorithm by appending a tuple (f(n), cell) to the heap.
+        self.g = 0
+        self.h = 0
+        self.f = self.g+self.h
+    def set_g(self, g):
+        self.g = g
+        self.f = self.g+self.h
+        return self.f
+
+    def set_h(self, h):
+        self.h = h
+        self.f = self.g+self.h
+        return self.f
+    """
     def get_pos(self) -> tuple:
         return (self.x, self.y)
     
@@ -25,13 +41,14 @@ class Cell():
     
     # comparison operator overload for comparing objects
     def __lt__(self, other):
-        return self.val < other.val
+        return self.f < other.f
     def __gt__(self, other):
-        return self.val > other.val
+        return self.f > other.f
+    """
+    # having the __eq__ comparison removes hasbaility for the cell object when trying to add the object to a set. i do not know why this happens, but it is worth looking into.
     def __eq__(self, other):
-        return self.val == other.val
-    
-
+        return not (self.f < other.f) and not (other.f < self.f)
+    """
 
 class MazeArray():
     """
@@ -72,6 +89,19 @@ class MazeArray():
             currCell.walls['N'] = False
             otherCell.walls['S'] = False
     
+    def wall_exists(self, currCell: Cell, otherCell: Cell) -> bool:
+        if abs(currCell.x-otherCell.x)+abs(currCell.y-otherCell.y) != 1:
+            raise Exception("{otherCell} not adjacent to self {currCell}")
+
+        if otherCell.x > currCell.x:
+            return currCell.walls['E'] or otherCell.walls['W']
+        elif otherCell.x < currCell.x:
+            return currCell.walls['W'] or otherCell.walls['E']
+        elif otherCell.y > currCell.y:
+            return currCell.walls['S'] or otherCell.walls['N']
+        elif otherCell.y < currCell.y:
+            return currCell.walls['N'] or otherCell.walls['S']
+
     def __repr__(self):
         return str(self.world)
     
@@ -96,3 +126,6 @@ def read_maze(file):
 
 def write_maze(maze, file):
     pass
+
+
+
