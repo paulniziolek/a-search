@@ -29,12 +29,12 @@ def dfs(maze: MazeArray, *args):
             raise Exception(f"{len(args)} arguments given but only 0 or 2 accepted.")
         return maze.cell_at((pos[0], pos[1]))
 
-    # a node is valid when it is inside the grid and hasn't been visited
-    def is_valid(node: Cell | tuple) -> bool:
-        if isinstance(node, Cell):
-            return 0 <= node.x < n and 0 <= node.y < m and node not in visited
-        elif isinstance(node, tuple):
-            return 0 <= node[0] < n and 0 <= node[1] < m and maze.cell_at((node[0], node[1])) not in visited
+    # a cell is valid when it is inside the grid and hasn't been visited
+    def is_valid(cell: Cell | tuple) -> bool:
+        if isinstance(cell, Cell):
+            return 0 <= cell.x < n and 0 <= cell.y < m and cell not in visited
+        elif isinstance(cell, tuple):
+            return 0 <= cell[0] < n and 0 <= cell[1] < m and maze.cell_at((cell[0], cell[1])) not in visited
 
     # fills neighbors with valid maze Cells
     def get_valid_neighbors(cell: Cell) -> list[Cell]:
