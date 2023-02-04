@@ -2,7 +2,9 @@
 
 class Cell():
     """
-    Object representing a cell with walls in its compass directons
+    Object representing a cell with walls in its compass directons.
+    - get_pos() -> tuple: returns position of cell obj
+    - get_neighbors() -> list[tuple]: return all possible unverified neighbors
 
     """
     def __init__(self, x: int, y: int, isWall:bool=True):
@@ -24,6 +26,8 @@ class Cell():
 class MazeArray():
     """
     Object representing Maze array of Cell() objects
+    - cell_at(n: tuple) -> Cell: returns cell object at position n or (x, y)
+    - remove_wall(currCell: Cell, otherCell: Cell) -> None: removes the adjacent wall to currCell and otherCell
     """
     def __init__(self, m: int, n: int, isWall=True):
         self.n = n

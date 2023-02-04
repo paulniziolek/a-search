@@ -2,18 +2,18 @@ from maze import MazeArray, Cell
 from collections import deque
 import random
 
-def create_maze(m=4, n=4, isRandom=False):
+def create_maze(m=20, n=20, isRandom=False):
     if m < 1 or n < 1:
         raise Exception(f"Invalid Maze Size: {m}x{n}")
 
     if isRandom:
-        m = random.randrange(m)
-        n = random.randrange(n)
+        m = random.randrange(1,m+1)
+        n = random.randrange(1,n+1)
         
     return MazeArray(m, n)
     
 # iterative implementation of DFS
-def dfs(maze, *args):
+def dfs(maze: MazeArray, *args):
     # initializing variables
     m, n = maze.m, maze.n
     visited: set(Cell) = set()
@@ -44,14 +44,11 @@ def dfs(maze, *args):
                 unverified_neighbors[i] = maze.cell_at((unverified_neighbors[i][0], unverified_neighbors[i][1]))
         return list(filter(lambda x: isinstance(x, Cell), unverified_neighbors)) # returns the list of validated neighbors
         
-
     # SUB METHODS END ---------------------------------------------------------------------------
-
     # adding in start position
-    start = check_args(args)
-    visited.add(start)
-    stack: list[Cell] = [start]
-    cell = start
+    cell = check_args(args)
+    visited.add(cell)
+    stack: list[Cell] = [cell]
 
     while stack:
         visited.add(cell)
@@ -59,20 +56,10 @@ def dfs(maze, *args):
         if not neighbors:
             cell = stack.pop()
             continue
-
         nextCell = random.choice(neighbors)
         maze.remove_wall(cell, nextCell)
         stack.append(cell)
         cell = nextCell
 
-# TESTING
-myworld = create_maze()
-print(myworld)
-dfs(myworld)
-print(myworld)
-
-for cell in myworld.world[0]:
-    print((cell.x, cell.y))
-    print(cell.walls)
-
-
+def create_position(maze: MazeArray) -> Cell:
+    return maze.cell_at((random.randrange(maze.n), random.randrange(maze.m)))
