@@ -15,21 +15,7 @@ class Cell():
         
         # including f=0 to have some comparability operation between Cell objects, especially when adding the Cell object to the heap. 
         self.f = 0
-    """
-    # I was going to add g(n) and h(n) as part of the cell obj, but instead handled this in the a* algorithm by appending a tuple (f(n), cell) to the heap.
-        self.g = 0
-        self.h = 0
-        self.f = self.g+self.h
-    def set_g(self, g):
-        self.g = g
-        self.f = self.g+self.h
-        return self.f
 
-    def set_h(self, h):
-        self.h = h
-        self.f = self.g+self.h
-        return self.f
-    """
     def get_pos(self) -> tuple:
         return (self.x, self.y)
     
