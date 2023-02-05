@@ -44,6 +44,7 @@ class MazeArray():
     - wall_exists(currCell: Cell, otherCell: Cell) -> bool: returns True if a wall exists between currCell and otherCell
     - update_position(agent: Cell) -> MazeArray: used to update the string representation with the agent's location
     - set_end(end: Cell) -> None: set the end position
+    - set_boundary_walls() -> None: To prevent no boundary walls. (implemented to avoid red highlights for printing empty row in vscode)
     """
     def __init__(self, m: int, n: int, hasWalls=True):
         self.n = n
@@ -99,6 +100,14 @@ class MazeArray():
 
     def set_end(self, end: Cell) -> None:
         self.end = end.get_pos()
+    
+    def set_boundary_walls(self) -> None:
+        for i in range(self.m):
+            self.cell_at((0, i)).walls['W'] = True
+            self.cell_at((self.n-1, i)).walls['E'] = True
+        for i in range(self.n):
+            self.cell_at((i, 0)).walls['N'] = True
+            self.cell_at((i, self.m-1)).walls['S'] = True
 
     def __repr__(self):
         return str(self.world)
@@ -110,7 +119,7 @@ class MazeArray():
         mystr+='+\n'
         for i in range(self.m):
             horstr = "+"
-            verstr = "|"
+            verstr = "|" if self.cell_at((0, i)).walls['W'] else " "
             for j in range(self.n):
                 if self.cell_at((j,i)).walls['E']: verstr += "  |"
                 else: verstr += "   "
