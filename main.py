@@ -1,9 +1,13 @@
 from maze_generation import create_maze, dfs, rand_position
 from a_star_search import a_star
+import sys
+
+sys.stdin.reconfigure(encoding='utf-8')
+sys.stdout.reconfigure(encoding='utf-8')
 
 
 def main():
-    maze = create_maze(70, 70, isRandom=False)
+    maze = create_maze(100, 100, isRandom=False)
     print(maze)
     fog = create_maze(maze.m, maze.n, hasWalls=False)
     dfs(maze)
