@@ -43,12 +43,12 @@ class MazeArray():
     - remove_wall(currCell: Cell, otherCell: Cell) -> None: removes the adjacent wall to currCell and otherCell
     - wall_exists(currCell: Cell, otherCell: Cell) -> bool: returns True if a wall exists between currCell and otherCell
     - get_position() -> Cell: returns agent's current position
-    - update_position(agent: Cell) -> MazeArray: used to update the string representation with the agent's location
+    - update_position(agent: Cell) -> None: used to update the string representation with the agent's location
     - set_end(end: Cell) -> None: set the end position
     - get_end() -> Cell: get the end position
     - set_boundary_walls() -> None: To prevent no boundary walls. (implemented to avoid red highlights for printing empty row in vscode)
     - update_walls(otherMaze: MazeArray, cell: Cell) -> None: updates cell's walls from another cell's wall attribute. will also update the neighboring cell's wall that are facing the origin cell. 
-    - valid_move(nextpos: tuple) -> bool: returns whether a move is valid
+    - valid_move(nextpos: Cell) -> bool: returns whether a move is valid
     """
     def __init__(self, m: int, n: int, hasWalls=True):
         self.n = n
@@ -103,7 +103,6 @@ class MazeArray():
 
     def update_position(self, agent: Cell):
         self.agent = agent.get_pos()
-        return(self)
 
     def set_end(self, end: Cell) -> None:
         self.end = end.get_pos()
@@ -120,23 +119,22 @@ class MazeArray():
             self.cell_at((i, self.m-1)).walls['S'] = True
     
     def update_walls(self, otherMaze, cell: Cell) -> None:
-        cellx, celly = cell.get_pos()
         def isValid(cell: Cell):
-            return 0 <= cell[0] < self.n and 0 <= cell[1] < self.m
+            return 0 <= cell.x < self.n and 0 <= cell.y < self.m
         
-        self.cell_at((cellx, celly)).walls = cell.walls
-        if isValid((cellx + 1, celly)): self.cell_at((cellx+1, celly)).walls['W'] = otherMaze.cell_at((cellx+1, celly)).walls['W']
-        if isValid((cellx + 1, celly)): self.cell_at((cellx-1, celly)).walls['E'] = otherMaze.cell_at((cellx-1, celly)).walls['E']
-        if isValid((cellx, celly + 1)): self.cell_at((cellx, celly + 1)).walls['N'] = otherMaze.cell_at((cellx, celly+1)).walls['N']
-        if isValid((cellx, celly + 1)): self.cell_at((cellx, celly - 1)).walls['S'] = otherMaze.cell_at((cellx, celly-1)).walls['S']
+        self.cell_at(cell.get_pos()).walls = cell.walls
+        if isValid((cell.x + 1, cell.y)): self.cell_at((cell.x+1, cell.y)).walls['W'] = otherMaze.cell_at((cell.x+1, cell.y)).walls['W']
+        if isValid((cell.x + 1, cell.y)): self.cell_at((cell.x-1, cell.y)).walls['E'] = otherMaze.cell_at((cell.x-1, cell.y)).walls['E']
+        if isValid((cell.x, cell.y + 1)): self.cell_at((cell.x, cell.y + 1)).walls['N'] = otherMaze.cell_at((cell.x, cell.y+1)).walls['N']
+        if isValid((cell.x, cell.y + 1)): self.cell_at((cell.x, cell.y - 1)).walls['S'] = otherMaze.cell_at((cell.x, cell.y-1)).walls['S']
 
-    def valid_move(self, nextpos: tuple):
-        if abs(self.agent[0]-nextpos[0])+abs(self.agent[1]-nextpos[1]) != 1:
+    def valid_move(self, nextpos: Cell):
+        if abs(self.agent[0]-nextpos.x)+abs(self.agent[1]-nextpos.y) != 1:
             raise Exception("Cannot Move: {otherCell} not adjacent to self {currCell}")
-        if self.agent[0] > nextpos[0]: return not self.cell_at(self.agent).walls['W']
-        if self.agent[0] < nextpos[0]: return not self.cell_at(self.agent).walls['E']
-        if self.agent[1] > nextpos[1]: return not self.cell_at(self.agent).walls['N']
-        if self.agent[1] < nextpos[1]: return not self.cell_at(self.agent).walls['S']
+        if self.agent[0] > nextpos.x: return not self.cell_at(self.agent).walls['W']
+        if self.agent[0] < nextpos.x: return not self.cell_at(self.agent).walls['E']
+        if self.agent[1] > nextpos.y: return not self.cell_at(self.agent).walls['N']
+        if self.agent[1] < nextpos.y: return not self.cell_at(self.agent).walls['S']
 
     def __repr__(self):
         return str(self.world)
