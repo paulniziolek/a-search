@@ -2,7 +2,7 @@ from maze import MazeArray, Cell
 from collections import deque
 import random
 
-def create_maze(m=20, n=20, isRandom=False):
+def create_maze(m=20, n=20, isRandom=False, hasWalls=True):
     if m < 1 or n < 1:
         raise Exception(f"Invalid Maze Size: {m}x{n}")
 
@@ -10,7 +10,7 @@ def create_maze(m=20, n=20, isRandom=False):
         m = random.randrange(1,m+1)
         n = random.randrange(1,n+1)
         
-    return MazeArray(m, n)
+    return MazeArray(m, n, hasWalls)
     
 # iterative implementation of DFS
 def dfs(maze: MazeArray, *args):

@@ -7,10 +7,10 @@ class Cell():
     - get_neighbors() -> list[tuple]: return all possible unverified neighbors
 
     """
-    def __init__(self, x: int, y: int, isWall:bool=True):
+    def __init__(self, x: int, y: int, hasWalls:bool=True):
         self.x, self.y = x, y
         self.walls={'N': True, 'S': True, 'W': True, 'E': True}
-        if not isWall: 
+        if not hasWalls: 
             for key in self.walls.keys(): self.walls[key]=False
         
         # including f=0 to have some comparability operation between Cell objects, especially when adding the Cell object to the heap. 
@@ -45,7 +45,7 @@ class MazeArray():
     - update_position(agent: Cell) -> MazeArray: used to update the string representation with the agent's location
     - set_end(end: Cell) -> None: set the end position
     """
-    def __init__(self, m: int, n: int, isWall=True):
+    def __init__(self, m: int, n: int, hasWalls=True):
         self.n = n
         self.m = m
         self.totalnodes = (n+1)*(m+1)
@@ -56,7 +56,7 @@ class MazeArray():
         for i in range(m):
             self.world.append(list())
             for j in range(n):
-                self.world[i].append(Cell(j, i, isWall))
+                self.world[i].append(Cell(j, i, hasWalls))
                 ctr+=1
         print(f"{ctr} nodes created")
 
