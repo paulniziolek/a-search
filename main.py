@@ -2,17 +2,47 @@ from maze_generation import create_maze, dfs, create_position
 from a_star_search import a_star
 from maze import MazeArray, Cell
 
-mymaze = create_maze(25, 25)
-dfs(mymaze)
-print(mymaze)
-start = create_position(mymaze)
-end = create_position(mymaze)
+def main():
+    world = create_maze(30, 30, isRandom=False)
+    fog = create_maze(world.m, world.n, hasWalls=False)
+    fog.set_boundary_walls()
+    dfs(world)
 
-start = mymaze.cell_at((0, 0))
-end = mymaze.cell_at((24, 24))
+    # setting start
+    start = create_position(world)
+    world.update_position(start)
+    fog.update_position(start)
+    fog.update_walls(world, start)
+    print(fog.cell_at(start.get_pos()).walls)
 
-print(f"PATH FROM {start} TO {end} IS: ")
-mypath = a_star(mymaze, start, end)
-print(mymaze)
-print(mypath)
-print(len(mypath))
+    # setting end
+    end = create_position(world)
+    world.set_end(end)
+    fog.set_end(end)
+
+    print(world)
+    print(fog)
+
+    curr_trajectory = a_star(fog, fog.get_position(), fog.get_end())
+    path_taken = [start]
+
+    while curr_trajectory:
+        for nextMove in curr_trajectory[1::]:
+            if world.valid_move(nextMove):
+                fog.update_walls(world, world.cell_at(nextMove.get_pos()))
+                fog.update_position(fog.cell_at(nextMove.get_pos()))
+                path_taken.append(nextMove)
+                world.update_position(world.cell_at(nextMove.get_pos()))
+                print(world)
+                print(fog)
+            else:
+                break
+        curr_trajectory = a_star(fog, fog.get_position(), fog.get_end())
+        if len(curr_trajectory)<=1:
+            break
+
+    print(fog)
+    print(path_taken)
+    print(len(path_taken))
+
+main()
