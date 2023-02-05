@@ -1,7 +1,6 @@
-from maze_generation import create_maze, dfs, create_position
+from typing import Generator, List, Tuple
 from maze import MazeArray, Cell
 import heapq
-from collections import deque
 
 def a_star(maze: MazeArray, start: Cell, end: Cell):
     m, n = maze.m, maze.n
@@ -10,29 +9,22 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
     def heuristic(node: Cell) -> int:
         return abs(node.x-end.x)+abs(node.y-end.y)
     
-    # a cell is valid when it is inside the grid
-    def is_valid(cell: Cell | tuple) -> bool:
-        if isinstance(cell, Cell):
-            return 0 <= cell.x < n and 0 <= cell.y < m
-        elif isinstance(cell, tuple):
-            return 0 <= cell[0] < n and 0 <= cell[1] < m and maze.cell_at((cell[0], cell[1]))
+    # a position is valid when it is inside the grid and is unblocked
+    def is_valid(x: int, y: int) -> bool:
+        return 0 <= x < n and 0 <= y < m and not maze.world[x][y].blocked
 
     # fills neighbors with valid maze Cells
     # a neighbor is valid when it is inside the grid, directly next to its origin cell, and does not have a wall between its origin cell. 
-    def get_valid_neighbors(cell: Cell) -> list[Cell]:
-        unverified_neighbors = cell.get_neighbors()
-        for i in range(4): # four possible neighbors
-            if is_valid(unverified_neighbors[i]):
-                unverified_neighbors[i] = maze.cell_at((unverified_neighbors[i][0], unverified_neighbors[i][1]))
-        unverified_neighbors = list(filter(lambda x: isinstance(x, Cell), unverified_neighbors))
-        verified_neighbors = list(filter(lambda x: not maze.wall_exists(x, cell), unverified_neighbors))
+    def get_valid_neighbors(cell: Cell) -> Generator[Cell, None, None]:
+        for dx, dy in ((0,-1), (0,1), (-1, 0), (1, 0)):  # for four possible neighbors
+            if is_valid(cell.x + dx, cell.y + dy):
+                yield maze.world[cell.x + dx][cell.y + dy]
         #print(f"neighbors of {cell} are {unverified_neighbors}") # debugging neighbors
-        return verified_neighbors # returns the list of validated neighbors
 
     # A* Algorithm logic follows:
     closed_list = {} # hashmap with key=cell, and val=smallest f(n)
     path = {} # hashmap with key=currNode and val=prevNode, for pathing
-    open_list: list[tuple(int, Cell)] = [(heuristic(start), start)] # will store cells in the open_list heap by tuple (h(n), n)
+    open_list: List[Tuple[int, Cell]] = [(heuristic(start), start)] # will store cells in the open_list heap by tuple (h(n), n)
     heapq.heapify(open_list)
 
     while open_list:

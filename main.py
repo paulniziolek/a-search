@@ -1,48 +1,63 @@
-from maze_generation import create_maze, dfs, create_position
+from maze_generation import create_maze, dfs, rand_position
 from a_star_search import a_star
-from maze import MazeArray, Cell
+
 
 def main():
-    world = create_maze(30, 30, isRandom=False)
-    fog = create_maze(world.m, world.n, hasWalls=False)
-    fog.set_boundary_walls()
-    dfs(world)
+    maze = create_maze(70, 70, isRandom=False)
+    print(maze)
+    fog = create_maze(maze.m, maze.n, hasWalls=False)
+    dfs(maze)
+    print(maze)
 
     # setting start
-    start = create_position(world)
-    world.update_position(start)
+    start = rand_position(maze)
+    maze.update_position(start)
     fog.update_position(start)
-    fog.update_walls(world, start)
-    print(fog.cell_at(start.get_pos()).walls)
+    fog.update_walls(maze, start)
+    # print(fog.cell_at(start.get_pos()).walls)
 
     # setting end
-    end = create_position(world)
-    world.set_end(end)
+    end = rand_position(maze, unallowed=start)
+    maze.set_end(end)
     fog.set_end(end)
 
-    print(world)
-    print(fog)
+    # print(world)
+    # print(fog)
 
     curr_trajectory = a_star(fog, fog.get_position(), fog.get_end())
     path_taken = [start]
 
+    from datetime import datetime, timedelta
+
+    tot = timedelta()
+    iters = 0
+
     while curr_trajectory:
-        for nextMove in curr_trajectory[1::]:
-            if world.valid_move(nextMove):
-                fog.update_walls(world, world.cell_at(nextMove.get_pos()))
-                fog.update_position(fog.cell_at(nextMove.get_pos()))
-                path_taken.append(nextMove)
-                world.update_position(world.cell_at(nextMove.get_pos()))
-                print(world)
-                print(fog)
+        iters += 1
+        for next_move in curr_trajectory[1::]:
+            if maze.valid_move(next_move):
+                fog.update_walls(maze, maze.world[next_move.x][next_move.y])
+                fog.update_position(fog.world[next_move.x][next_move.y])
+                path_taken.append(next_move)
+                maze.update_position(maze.world[next_move.x][next_move.y])
             else:
                 break
+        start = datetime.now()
         curr_trajectory = a_star(fog, fog.get_position(), fog.get_end())
-        if len(curr_trajectory)<=1:
+        tot += datetime.now() - start
+        if len(curr_trajectory) <= 1:
             break
 
-    print(fog)
-    print(path_taken)
-    print(len(path_taken))
+    # print(fog)
+    # print(path_taken)
+    # print(len(path_taken))
+    print(tot)
+    print(iters)
 
-main()
+
+import cProfile
+
+with cProfile.Profile() as pr:
+    main()
+    filename = "profile.prof"
+    pr.dump_stats(filename)
