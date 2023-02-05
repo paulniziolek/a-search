@@ -119,14 +119,15 @@ class MazeArray():
             self.cell_at((i, self.m-1)).walls['S'] = True
     
     def update_walls(self, otherMaze, cell: Cell) -> None:
-        def isValid(cell: Cell):
-            return 0 <= cell.x < self.n and 0 <= cell.y < self.m
+        def isValid(cell: tuple):
+            return 0 <= cell[0] < self.n and 0 <= cell[1] < self.m
         
         self.cell_at(cell.get_pos()).walls = cell.walls
-        if isValid((cell.x + 1, cell.y)): self.cell_at((cell.x+1, cell.y)).walls['W'] = otherMaze.cell_at((cell.x+1, cell.y)).walls['W']
-        if isValid((cell.x + 1, cell.y)): self.cell_at((cell.x-1, cell.y)).walls['E'] = otherMaze.cell_at((cell.x-1, cell.y)).walls['E']
+
+        if isValid((cell.x+1, cell.y)): self.cell_at((cell.x+1, cell.y)).walls['W'] = otherMaze.cell_at((cell.x+1, cell.y)).walls['W']
+        if isValid((cell.x-1, cell.y)): self.cell_at((cell.x-1, cell.y)).walls['E'] = otherMaze.cell_at((cell.x-1, cell.y)).walls['E']
         if isValid((cell.x, cell.y + 1)): self.cell_at((cell.x, cell.y + 1)).walls['N'] = otherMaze.cell_at((cell.x, cell.y+1)).walls['N']
-        if isValid((cell.x, cell.y + 1)): self.cell_at((cell.x, cell.y - 1)).walls['S'] = otherMaze.cell_at((cell.x, cell.y-1)).walls['S']
+        if isValid((cell.x, cell.y - 1)): self.cell_at((cell.x, cell.y - 1)).walls['S'] = otherMaze.cell_at((cell.x, cell.y-1)).walls['S']
 
     def valid_move(self, nextpos: Cell):
         if abs(self.agent[0]-nextpos.x)+abs(self.agent[1]-nextpos.y) != 1:
