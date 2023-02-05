@@ -41,6 +41,9 @@ class MazeArray():
     Object representing Maze array of Cell() objects
     - cell_at(n: tuple) -> Cell: returns cell object at position n or (x, y)
     - remove_wall(currCell: Cell, otherCell: Cell) -> None: removes the adjacent wall to currCell and otherCell
+    - wall_exists(currCell: Cell, otherCell: Cell) -> bool: returns True if a wall exists between currCell and otherCell
+    - update_position(agent: Cell) -> MazeArray: used to update the string representation with the agent's location
+    - set_end(end: Cell) -> None: set the end position
     """
     def __init__(self, m: int, n: int, isWall=True):
         self.n = n
@@ -48,6 +51,8 @@ class MazeArray():
         self.totalnodes = (n+1)*(m+1)
         self.world = []
         ctr = 0
+        self.agent = (-1, -1)
+        self.end = (-1, -1)
         for i in range(m):
             self.world.append(list())
             for j in range(n):
@@ -87,6 +92,13 @@ class MazeArray():
             return currCell.walls['S'] or otherCell.walls['N']
         elif otherCell.y < currCell.y:
             return currCell.walls['N'] or otherCell.walls['S']
+    
+    def update_position(self, agent: Cell) -> None:
+        self.agent = agent.get_pos()
+        return(self)
+
+    def set_end(self, end: Cell) -> None:
+        self.end = end.get_pos()
 
     def __repr__(self):
         return str(self.world)
@@ -104,6 +116,17 @@ class MazeArray():
                 else: verstr += "   "
                 if self.cell_at((j,i)).walls['S']: horstr += "--+"
                 else: horstr += "  +"
+
+                # if cell is agent position or end position, then indicate position
+                if ((j,i))==self.agent:
+                    verstr=verstr[:-3]
+                    if self.cell_at((j,i)).walls['E']: verstr += "SS|"
+                    else: verstr+="SS "
+                elif ((j,i))==self.end:
+                    verstr=verstr[:-3]
+                    if self.cell_at((j,i)).walls['E']: verstr += "EE|"
+                    else: verstr+="EE "
+
             mystr+=verstr + '\n' + horstr + '\n'
         return mystr
 
