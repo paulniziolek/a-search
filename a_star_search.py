@@ -26,7 +26,7 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
                 unverified_neighbors[i] = maze.cell_at((unverified_neighbors[i][0], unverified_neighbors[i][1]))
         unverified_neighbors = list(filter(lambda x: isinstance(x, Cell), unverified_neighbors))
         verified_neighbors = list(filter(lambda x: not maze.wall_exists(x, cell), unverified_neighbors))
-        print(f"neighbors of {cell} are {unverified_neighbors}")
+        #print(f"neighbors of {cell} are {unverified_neighbors}") # debugging neighbors
         return verified_neighbors # returns the list of validated neighbors
 
     # A* Algorithm logic follows:
