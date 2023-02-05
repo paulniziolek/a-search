@@ -42,8 +42,10 @@ class MazeArray():
     - cell_at(n: tuple) -> Cell: returns cell object at position n or (x, y)
     - remove_wall(currCell: Cell, otherCell: Cell) -> None: removes the adjacent wall to currCell and otherCell
     - wall_exists(currCell: Cell, otherCell: Cell) -> bool: returns True if a wall exists between currCell and otherCell
+    - get_position() -> Cell: returns agent's current position
     - update_position(agent: Cell) -> MazeArray: used to update the string representation with the agent's location
     - set_end(end: Cell) -> None: set the end position
+    - get_end() -> Cell: get the end position
     - set_boundary_walls() -> None: To prevent no boundary walls. (implemented to avoid red highlights for printing empty row in vscode)
     """
     def __init__(self, m: int, n: int, hasWalls=True):
@@ -94,12 +96,18 @@ class MazeArray():
         elif otherCell.y < currCell.y:
             return currCell.walls['N'] or otherCell.walls['S']
     
-    def update_position(self, agent: Cell) -> None:
+    def get_position(self) -> Cell:
+        return self.cell_at(self.agent)
+
+    def update_position(self, agent: Cell):
         self.agent = agent.get_pos()
         return(self)
 
     def set_end(self, end: Cell) -> None:
         self.end = end.get_pos()
+    
+    def get_end(self):
+        return self.cell_at(self.end)
     
     def set_boundary_walls(self) -> None:
         for i in range(self.m):
