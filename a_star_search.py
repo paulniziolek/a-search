@@ -2,11 +2,13 @@ from maze_generation import create_maze, dfs, create_position
 from maze import MazeArray, Cell
 import heapq
 from collections import deque
+from functools import lru_cache
 
 def a_star(maze: MazeArray, start: Cell, end: Cell):
     m, n = maze.m, maze.n
 
     # manhattan distance heuristic from node to end
+    @lru_cache()
     def heuristic(node: Cell) -> int:
         return abs(node.x-end.x)+abs(node.y-end.y)
     
@@ -19,15 +21,16 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
 
     # fills neighbors with valid maze Cells
     # a neighbor is valid when it is inside the grid, directly next to its origin cell, and does not have a wall between its origin cell. 
+    @lru_cache()
     def get_valid_neighbors(cell: Cell) -> list[Cell]:
         unverified_neighbors = cell.get_neighbors()
         for i in range(4): # four possible neighbors
             if is_valid(unverified_neighbors[i]):
                 unverified_neighbors[i] = maze.cell_at((unverified_neighbors[i][0], unverified_neighbors[i][1]))
         unverified_neighbors = list(filter(lambda x: isinstance(x, Cell), unverified_neighbors))
-        verified_neighbors = list(filter(lambda x: not maze.wall_exists(x, cell), unverified_neighbors))
+        unverified_neighbors = list(filter(lambda x: not maze.wall_exists(x, cell), unverified_neighbors))
         #print(f"neighbors of {cell} are {unverified_neighbors}") # debugging neighbors
-        return verified_neighbors # returns the list of validated neighbors
+        return unverified_neighbors # returns the list of validated neighbors
 
     # A* Algorithm logic follows:
     closed_list = {} # hashmap with key=cell, and val=smallest f(n)
@@ -44,18 +47,12 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
         # g(new n) = fn-heuristic(n)+1, AND h(new n) = heuristic(new n). 
         neighbors = list(map(lambda x: (fn-heuristic(node)+1+heuristic(x), x), neighbors)) # returns list of (f(new n), new n)
 
-        if node in closed_list:
-            if closed_list[node] > fn:
-                closed_list[node] = fn
-        else: closed_list[node] = fn
+        closed_list[node] = fn
 
         # updating neighbors with closed/open lists
         for fN, neighbor in neighbors:
             if neighbor in closed_list:
-                if closed_list[neighbor] > fN:
-                    closed_list[neighbor] = fN
-                    path[neighbor] = node
-                else: continue
+                continue
             heapq.heappush(open_list, (fN, neighbor))
             path[neighbor] = node
         """
@@ -65,6 +62,8 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
         print(closed_list)
         print(path)
         """
+    print(f"Total expanded nodes (Closed List): {len(closed_list)}")
+    print(f"Total visited nodes (Open List): {len(open_list)}")
 
     # creating path as list
     ptr: Cell = end

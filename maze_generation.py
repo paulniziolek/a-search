@@ -1,6 +1,7 @@
 from maze import MazeArray, Cell
 from collections import deque
 import random
+from functools import lru_cache
 
 def create_maze(m=20, n=20, isRandom=False, hasWalls=True):
     if m < 1 or n < 1:
@@ -37,6 +38,7 @@ def dfs(maze: MazeArray, *args):
             return 0 <= cell[0] < n and 0 <= cell[1] < m and maze.cell_at((cell[0], cell[1])) not in visited
 
     # fills neighbors with valid maze Cells
+
     def get_valid_neighbors(cell: Cell) -> list[Cell]:
         unverified_neighbors = cell.get_neighbors()
         for i in range(4): # for four possible neighbors
