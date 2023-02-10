@@ -3,7 +3,7 @@ from a_star_search import a_star
 from maze import MazeArray, Cell
 
 def main():
-    world = create_maze(100, 100, isRandom=False)
+    world = create_maze(101, 101, isRandom=False)
     fog = create_maze(world.m, world.n, hasWalls=False)
     fog.set_boundary_walls()
     dfs(world)
