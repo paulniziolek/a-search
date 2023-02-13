@@ -1,4 +1,4 @@
-#myfile = open("matrix.txt", "w")
+import pickle
 
 class Cell():
     """
@@ -167,11 +167,13 @@ class MazeArray():
             mystr+=verstr + '\n' + horstr + '\n'
         return mystr
 
-def read_maze(file):
-    pass
+def read_maze(file: str) -> MazeArray:
+    with open(file, 'rb'):
+        return pickle.load(file)
 
-def write_maze(maze, file):
-    pass
+def write_maze(maze: MazeArray, file: str) -> None:
+    with open(file, 'wb'):
+        pickle.dump(maze, file)
 
 
 
