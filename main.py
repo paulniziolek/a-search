@@ -1,8 +1,25 @@
 from maze_generation import create_maze, dfs, create_position
 from a_star_search import a_star
-from maze import MazeArray, Cell
+from maze import read_maze, write_maze
+
+# TO DO: 
+# Implement script for generating mazes
+# Implement function for repeated forward/backward/adaptive A*
 
 def main():
+
+    """     
+    # Creates 50 mazes in ./assets
+    for i in range(1, 51):
+        create_mazes(i)
+    """
+    forward_a_star(1)
+
+
+def debug():
+    pass
+
+def create_mazes(id):
     world = create_maze(101, 101, isRandom=False)
     fog = create_maze(world.m, world.n, hasWalls=False)
     fog.set_boundary_walls()
@@ -13,18 +30,28 @@ def main():
     world.update_position(start)
     fog.update_position(start)
     fog.update_walls(world, start)
-    print(fog.cell_at(start.get_pos()).walls)
 
     # setting end
     end = create_position(world)
     world.set_end(end)
     fog.set_end(end)
 
+    # file paths
+    file1 = f'./assets/world{id}.pickle'
+    file2 = f'./assets/fog{id}.pickle'
+
+    write_maze(world, file1)
+    write_maze(fog, file2)
+
+def forward_a_star(id):
+    world = read_maze(f'./assets/world{id}.pickle')
+    fog = read_maze(f'./assets/fog{id}.pickle')
+
     #print(world)
     #print(fog)
 
     curr_trajectory = a_star(fog, fog.get_position(), fog.get_end())
-    path_taken = [start]
+    path_taken = [world.get_position()]
 
     while curr_trajectory:
         for nextMove in curr_trajectory[1::]:
@@ -45,19 +72,6 @@ def main():
     #print(path_taken)
     print(len(path_taken))
 
-def debug():
-    world = create_maze(400, 400, isRandom=False)
-    dfs(world)
-    start = create_position(world)
-    world.update_position(start)
-    end = create_position(world)
-    world.set_end(end)
-    #print(world)
-    curr_trajectory = a_star(world, world.get_position(), world.get_end())
-    #print(curr_trajectory)
-
-
 
 
 main()
-#debug()
