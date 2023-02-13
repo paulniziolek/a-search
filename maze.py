@@ -167,13 +167,13 @@ class MazeArray():
             mystr+=verstr + '\n' + horstr + '\n'
         return mystr
 
-def read_maze(file: str) -> MazeArray:
-    with open(file, 'rb'):
-        return pickle.load(file)
+def read_maze(file) -> MazeArray:
+    with open(file, 'rb') as f:
+        return pickle.load(f)
 
-def write_maze(maze: MazeArray, file: str) -> None:
-    with open(file, 'wb'):
-        pickle.dump(maze, file)
+def write_maze(maze: MazeArray, file) -> None:
+    with open(file, 'wb') as f:
+        pickle.dump(maze, f)
 
 
 
