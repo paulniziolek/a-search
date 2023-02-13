@@ -13,7 +13,8 @@ def main():
     for i in range(1, 51):
         create_mazes(i)
     """
-    forward_a_star(1)
+    create_mazes(51)
+    forward_a_star(51)
 
 
 def debug():
