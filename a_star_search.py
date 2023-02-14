@@ -65,8 +65,8 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
         print(closed_list)
         print(path)
         """
-    print(f"Total expanded nodes (Closed List): {len(closed_list)}")
-    print(f"Total visited nodes (Open List): {len(open_list)}")
+    #print(f"Total expanded nodes (Closed List): {len(closed_list)}")
+    #print(f"Total visited nodes (Open List): {len(open_list)}")
 
     # creating path as list
     ptr: Cell = end

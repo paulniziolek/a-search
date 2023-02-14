@@ -8,13 +8,14 @@ from maze import read_maze, write_maze
 
 def main():
 
-    """     
+    """
     # Creates 50 mazes in ./assets
     for i in range(1, 51):
         create_mazes(i)
     """
-    create_mazes(51)
-    forward_a_star(51)
+    
+    #create_mazes(51)
+    forward_a_star(52)
 
 
 def debug():

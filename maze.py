@@ -12,9 +12,7 @@ class Cell():
         self.walls={'N': True, 'S': True, 'W': True, 'E': True}
         if not hasWalls: 
             for key in self.walls.keys(): self.walls[key]=False
-        
-        # including f=0 to have some comparability operation between Cell objects, especially when adding the Cell object to the heap. 
-        self.f = 0
+        #self.f = 0
 
     def get_pos(self) -> tuple:
         return (self.x, self.y)
@@ -27,9 +25,9 @@ class Cell():
     
     # comparison operator overload for comparing objects
     def __lt__(self, other):
-        return self.f < other.f
-    def __gt__(self, other):
-        return self.f > other.f
+        #return self.f < other.f
+        return True
+
     """
     # having the __eq__ comparison removes hasbaility for the cell object when trying to add the object to a set. i do not know why this happens, but it is worth looking into.
     def __eq__(self, other):
