@@ -15,7 +15,8 @@ def main():
     """
     
     #create_mazes(51)
-    forward_a_star(52)
+    #forward_a_star(51)
+    backward_a_star(51)
 
 
 def debug():
@@ -73,6 +74,38 @@ def forward_a_star(id):
     #print(fog)
     #print(path_taken)
     print(len(path_taken))
+
+def backward_a_star(id):
+    world = read_maze(f'./assets/world{id}.pickle')
+    fog = read_maze(f'./assets/fog{id}.pickle')
+
+    #print(world)
+    #print(fog)
+
+    curr_trajectory = a_star(fog, fog.get_end(), fog.get_position())
+    curr_trajectory.reverse()
+    path_taken = [world.get_position()]
+
+    while curr_trajectory:
+        for nextMove in curr_trajectory[1::]:
+            if world.valid_move(nextMove):
+                fog.update_walls(world, world.cell_at(nextMove.get_pos()))
+                fog.update_position(fog.cell_at(nextMove.get_pos()))
+                path_taken.append(nextMove)
+                world.update_position(world.cell_at(nextMove.get_pos()))
+                #print(world)
+                #print(fog)
+            else:
+                break
+        curr_trajectory = a_star(fog, fog.get_end(), fog.get_position())
+        curr_trajectory.reverse()
+        if len(curr_trajectory)<=1:
+            break
+
+    #print(fog)
+    #print(path_taken)
+    print(len(path_taken))
+
 
 
 
