@@ -63,8 +63,7 @@ def forward_a_star(id):
                 fog.update_position(fog.cell_at(nextMove.get_pos()))
                 path_taken.append(nextMove)
                 world.update_position(world.cell_at(nextMove.get_pos()))
-                #print(world)
-                print(fog)
+                #print(fog)
             else:
                 break
         curr_trajectory, expanded_cells = a_star(fog, fog.get_position(), fog.get_end())
@@ -95,7 +94,6 @@ def backward_a_star(id):
                 fog.update_position(fog.cell_at(nextMove.get_pos()))
                 path_taken.append(nextMove)
                 world.update_position(world.cell_at(nextMove.get_pos()))
-                #print(world)
                 #print(fog)
             else:
                 break
