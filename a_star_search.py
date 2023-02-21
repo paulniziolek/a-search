@@ -10,7 +10,8 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
     # manhattan distance heuristic from node to end
     @lru_cache()
     def heuristic(node: Cell) -> int:
-        return abs(node.x-end.x)+abs(node.y-end.y)
+        node.h = abs(node.x-end.x)+abs(node.y-end.y)
+        return node.h
     
     # a cell is valid when it is inside the grid
     def is_valid(cell: Cell | tuple) -> bool:
@@ -47,6 +48,8 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
         neighbors = get_valid_neighbors(node)
         # g(new n) = fn-heuristic(n)+1, AND h(new n) = heuristic(new n). 
         neighbors = list(map(lambda x: (fn-heuristic(node)+1+heuristic(x), x), neighbors)) # returns list of (f(new n), new n)
+        
+        
 
         closed_list[node] = fn
 
@@ -75,7 +78,7 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
         realpath.append(path[ptr])
         ptr = path[ptr]
     realpath.reverse()
-    return realpath
+    return realpath, len(closed_list)
 
 
 
