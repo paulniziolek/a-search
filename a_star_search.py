@@ -13,6 +13,10 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
         node.h = abs(node.x-end.x)+abs(node.y-end.y)
         return node.h
     
+    def increment_g(node: Cell, prevNode: Cell) -> int:
+        node.g = prevNode.g+1
+        return 1
+    
     # a cell is valid when it is inside the grid
     def is_valid(cell: Cell | tuple) -> bool:
         if isinstance(cell, Cell):
@@ -36,7 +40,9 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
     # A* Algorithm logic follows:
     closed_list = {} # hashmap with key=cell, and val=smallest f(n)
     path = {} # hashmap with key=currNode and val=prevNode, for pathing
-    open_list: list[tuple(int, Cell)] = [(heuristic(start), start)] # will store cells in the open_list heap by tuple (h(n), n)
+    start.h = heuristic(start) # setting initial heuristic values for cell
+    start.g = 0
+    open_list: list[tuple(int, Cell)] = [(start.h, start)] # will store cells in the open_list heap by tuple (h(n), n)
     open_list_set = set() # bruh
     heapq.heapify(open_list)
 
@@ -47,8 +53,9 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
 
         neighbors = get_valid_neighbors(node)
         # g(new n) = fn-heuristic(n)+1, AND h(new n) = heuristic(new n). 
-        neighbors = list(map(lambda x: (fn-heuristic(node)+1+heuristic(x), x), neighbors)) # returns list of (f(new n), new n)
+        neighbors = list(map(lambda x: (fn-heuristic(node)+increment_g(x, node)+heuristic(x), x), neighbors)) # returns list of (f(new n), new n)
         
+
         
 
         closed_list[node] = fn
