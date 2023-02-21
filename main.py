@@ -14,8 +14,8 @@ def main():
         create_mazes(i)
     """
     
-    #create_mazes(10, 1)
-    forward_a_star(1)
+    #create_mazes(101, 2)
+    adaptive_a_star(2)
     #backward_a_star(1)
 
 
@@ -108,7 +108,48 @@ def backward_a_star(id):
     print(f'Total Expanded Cells: {total_expanded_cells}')
     print(f'Path Length: {len(path_taken)}')
 
+def adaptive_a_star(id):
+    world = read_maze(f'./assets/world{id}.pickle')
+    fog = read_maze(f'./assets/fog{id}.pickle')
 
+    #print(world)
+    #print(fog)
+
+    curr_trajectory, total_expanded_cells = a_star(fog, fog.get_position(), fog.get_end())
+    path_taken = [world.get_position()]
+    
+
+    while curr_trajectory:
+        # ADAPTIVE A* MODIFICATION (truncated)
+        #curr_trajectory[0].h = len(curr_trajectory)
+        #traversed_length = 1
+
+        # ADAPTIVE A* MODIFICATION
+        travlen = 0
+        for cell in curr_trajectory:
+            cell.h = max(len(curr_trajectory)-travlen, cell.h)
+            travlen += 1
+
+        for nextMove in curr_trajectory[1::]:
+            if world.valid_move(nextMove):
+                fog.update_walls(world, world.cell_at(nextMove.get_pos()))
+                fog.update_position(fog.cell_at(nextMove.get_pos()))
+                path_taken.append(nextMove)
+                world.update_position(world.cell_at(nextMove.get_pos()))
+                #print(fog)
+                # ADAPTIVE A* MODIFICATION (truncated)
+                #nextMove.h = len(curr_trajectory)-traversed_length
+            else:
+                break
+        curr_trajectory, expanded_cells = a_star(fog, fog.get_position(), fog.get_end())
+        total_expanded_cells+=expanded_cells
+        if len(curr_trajectory)<=1:
+            break
+
+    #print(fog)
+    #print(path_taken)
+    print(f'Total Expanded Cells: {total_expanded_cells}')
+    print(f'Path Length: {len(path_taken)}')
 
 
 main()
