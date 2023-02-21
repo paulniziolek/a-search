@@ -13,7 +13,6 @@ class Cell():
         if not hasWalls: 
             for key in self.walls.keys(): self.walls[key]=False
         self.h = 0
-        self.g = 0
 
     def get_pos(self) -> tuple:
         return (self.x, self.y)
@@ -29,7 +28,7 @@ class Cell():
     # tie breaking for part 2 should be implemented here... 
     # analyze tie-breaking for cells with larger g-values vs smaller g-values
     def __lt__(self, other):
-        return self.g > other.g
+        return self.h < other.h
         #return True
 
     """

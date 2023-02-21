@@ -1,7 +1,5 @@
-from maze_generation import create_maze, dfs, create_position
 from maze import MazeArray, Cell
 import heapq
-from collections import deque
 from functools import lru_cache
 
 def a_star(maze: MazeArray, start: Cell, end: Cell):
@@ -10,7 +8,7 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
     # manhattan distance heuristic from node to end
     @lru_cache()
     def heuristic(node: Cell) -> int:
-        node.h = abs(node.x-end.x)+abs(node.y-end.y)
+        node.h = max(abs(node.x-end.x)+abs(node.y-end.y), node.h)
         return node.h
     
     def increment_g(node: Cell, prevNode: Cell) -> int:
@@ -41,7 +39,6 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
     closed_list = {} # hashmap with key=cell, and val=smallest f(n)
     path = {} # hashmap with key=currNode and val=prevNode, for pathing
     start.h = heuristic(start) # setting initial heuristic values for cell
-    start.g = 0
     open_list: list[tuple(int, Cell)] = [(start.h, start)] # will store cells in the open_list heap by tuple (h(n), n)
     open_list_set = set() # bruh
     heapq.heapify(open_list)
@@ -55,9 +52,6 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
         # g(new n) = fn-heuristic(n)+1, AND h(new n) = heuristic(new n). 
         neighbors = list(map(lambda x: (fn-heuristic(node)+increment_g(x, node)+heuristic(x), x), neighbors)) # returns list of (f(new n), new n)
         
-
-        
-
         closed_list[node] = fn
 
         # updating neighbors with closed/open lists
