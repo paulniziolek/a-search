@@ -39,6 +39,7 @@ def a_star(maze: MazeArray, start: Cell, end: Cell):
     closed_list = {} # hashmap with key=cell, and val=smallest f(n)
     path = {} # hashmap with key=currNode and val=prevNode, for pathing
     start.h = heuristic(start) # setting initial heuristic values for cell
+    start.g = 0
     open_list: list[tuple(int, Cell)] = [(start.h, start)] # will store cells in the open_list heap by tuple (h(n), n)
     open_list_set = set() # bruh
     heapq.heapify(open_list)
