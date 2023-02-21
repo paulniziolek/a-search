@@ -14,8 +14,8 @@ def main():
         create_mazes(i)
     """
     
-    #create_mazes(101, 2)
-    adaptive_a_star(2)
+    create_mazes(101, 2)
+    forward_a_star(2)
     #backward_a_star(1)
 
 
