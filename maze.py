@@ -12,8 +12,8 @@ class Cell():
         self.walls={'N': True, 'S': True, 'W': True, 'E': True}
         if not hasWalls: 
             for key in self.walls.keys(): self.walls[key]=False
-        self.f = 0
         self.h = 0
+        self.g = 0
 
     def get_pos(self) -> tuple:
         return (self.x, self.y)
@@ -29,8 +29,8 @@ class Cell():
     # tie breaking for part 2 should be implemented here... 
     # analyze tie-breaking for cells with larger g-values vs smaller g-values
     def __lt__(self, other):
-        #return self.f < other.f
-        return True
+        return self.g > other.g
+        #return True
 
     """
     # having the __eq__ comparison removes hash-ability for the cell object when trying to add the object to a set. i do not know why this happens, but it is worth looking into.
