@@ -14,16 +14,16 @@ def main():
         create_mazes(i)
     """
     
-    #create_mazes(51)
-    #forward_a_star(51)
-    backward_a_star(51)
+    #create_mazes(10, 1)
+    forward_a_star(1)
+    #backward_a_star(1)
 
 
 def debug():
     pass
 
-def create_mazes(id):
-    world = create_maze(101, 101, isRandom=False)
+def create_mazes(size, id):
+    world = create_maze(size, size, isRandom=False)
     fog = create_maze(world.m, world.n, hasWalls=False)
     fog.set_boundary_walls()
     dfs(world)
@@ -53,7 +53,7 @@ def forward_a_star(id):
     #print(world)
     #print(fog)
 
-    curr_trajectory = a_star(fog, fog.get_position(), fog.get_end())
+    curr_trajectory, total_expanded_cells = a_star(fog, fog.get_position(), fog.get_end())
     path_taken = [world.get_position()]
 
     while curr_trajectory:
@@ -64,16 +64,18 @@ def forward_a_star(id):
                 path_taken.append(nextMove)
                 world.update_position(world.cell_at(nextMove.get_pos()))
                 #print(world)
-                #print(fog)
+                print(fog)
             else:
                 break
-        curr_trajectory = a_star(fog, fog.get_position(), fog.get_end())
+        curr_trajectory, expanded_cells = a_star(fog, fog.get_position(), fog.get_end())
+        total_expanded_cells+=expanded_cells
         if len(curr_trajectory)<=1:
             break
 
     #print(fog)
     #print(path_taken)
-    print(len(path_taken))
+    print(f'Total Expanded Cells: {total_expanded_cells}')
+    print(f'Path Length: {len(path_taken)}')
 
 def backward_a_star(id):
     world = read_maze(f'./assets/world{id}.pickle')
@@ -82,7 +84,7 @@ def backward_a_star(id):
     #print(world)
     #print(fog)
 
-    curr_trajectory = a_star(fog, fog.get_end(), fog.get_position())
+    curr_trajectory, total_expanded_cells = a_star(fog, fog.get_end(), fog.get_position())
     curr_trajectory.reverse()
     path_taken = [world.get_position()]
 
@@ -97,14 +99,16 @@ def backward_a_star(id):
                 #print(fog)
             else:
                 break
-        curr_trajectory = a_star(fog, fog.get_end(), fog.get_position())
+        curr_trajectory, expanded_cells = a_star(fog, fog.get_end(), fog.get_position())
+        total_expanded_cells+=expanded_cells
         curr_trajectory.reverse()
         if len(curr_trajectory)<=1:
             break
 
     #print(fog)
     #print(path_taken)
-    print(len(path_taken))
+    print(f'Total Expanded Cells: {total_expanded_cells}')
+    print(f'Path Length: {len(path_taken)}')
 
 
 
